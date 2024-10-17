@@ -1,0 +1,3 @@
+openssl req -nodes -new -x509 -keyout key.pem -out cert.pem
+
+Usar para servidor no terminal para funcionar.

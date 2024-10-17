@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Cadastro De Personagens</title>
+</head>
+<body>
+    <h1>Gerenciador de RPG</h1>
+    
+    <form id="formPersonagem">
+        <h2>Adicionar Personagem</h2>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required>
+        <label for="origem">Origem:</label>
+        <input type="text" id="origem" required>
+        <label for="nivel">Nível:</label>
+        <input type="number" id="nivel" required>
+        <button type="submit">Adicionar Personagem</button>
+    </form>
+
+    <form id="formPoder">
+        <h2>Adicionar Poder</h2>
+        <label for="tipoPoder">Tipo de Poder:</label>
+        <input type="text" id="tipoPoder" required>
+        <label for="dano">Dano:</label>
+        <input type="number" id="dano" required>
+        <label for="raridade">Raridade:</label>
+        <input type="text" id="raridade" required>
+        <label for="personagemId">ID do Personagem:</label>
+        <input type="number" id="personagemId" required>
+        <button type="submit">Adicionar Poder</button>
+    </form>
+
+    <div id="resultados">
+        <h2>Resultados</h2>
+        <button id="listarPersonagens">Listar Personagens</button>
+        <button id="listarPoderes">Listar Poderes</button>
+        <div id="lista"></div>
+    </div>
+
+    <script>
+        document.getElementById('formPersonagem').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const personagem = {
+                nome: document.getElementById('nome').value,
+                origem: document.getElementById('origem').value,
+                nivel: parseInt(document.getElementById('nivel').value)
+            };
+            fetch('https://localhost:3000/personagens', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(personagem)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Personagem adicionado:', data))
+            .catch(error => console.error('Erro:', error));
+        });
+
+        document.getElementById('formPoder').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const poder = {
+                tipo_poder: document.getElementById('tipoPoder').value,
+                dano: parseInt(document.getElementById('dano').value),
+                raridade: document.getElementById('raridade').value,
+                personagem_id: parseInt(document.getElementById('personagemId').value)
+            };
+            fetch('https://localhost:3000/poderes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(poder)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Poder adicionado:', data))
+            .catch(error => console.error('Erro:', error));
+        });
+
+        document.getElementById('listarPersonagens').addEventListener('click', function() {
+            fetch('https://localhost:3000/personagens')
+            .then(response => response.json())
+            .then(data => {
+                const lista = document.getElementById('lista');
+                lista.innerHTML = '<h3>Personagens:</h3>' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+
+        document.getElementById('listarPoderes').addEventListener('click', function() {
+            fetch('https://localhost:3000/poderes')
+            .then(response => response.json())
+            .then(data => {
+                const lista = document.getElementById('lista');
+                lista.innerHTML = '<h3>Poderes:</h3>' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Erro:', error));
+        });
+    </script>
+</body>
+</html>
